@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 
-type MemberModel = unknown;
+export type MemberModel = {
+  id: number;
+  name: string;
+  country: string;
+  lat: number;
+  lng: number;
+
+  gender?: string;
+  yearJoined?: number;
+  roleType?: string;
+  voyageRole?: string;
+  soloTier?: string;
+  voyageTier?: string;
+  voyage?: string;
+};
+
 
 export async function GET(request: NextRequest) {
   // Query Parameters (e.g. `/api/members?gender=Male`)
