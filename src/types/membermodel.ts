@@ -29,3 +29,16 @@ export type MapMember = {
   yearJoined?: string;
   // Add more fields here if needed in future (like roleType, goal, etc.)
 };
+
+export type ApiMember = {
+  id: number;
+  yearJoined: number;
+  gender: string;
+  timezone: string;
+  countryCode: string;
+  goal: string;
+  source: string;
+  roleType: string;
+  role: string;
+  soloProjectTier: number;
+};

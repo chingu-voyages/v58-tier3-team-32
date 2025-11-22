@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 import rawMembers from "@/data/members.json";
 import { countryCoords } from "@/data/countryCoords";
-import { MapMember, RawMember } from "@/types/membermodel";
+import { ApiMember, MapMember} from "@/types/membermodel";
 
 type MapViewProps = {
   filters?: {
@@ -62,33 +62,35 @@ export default function MapView({ filters = {} }: MapViewProps) {
 
   // Fetch members (dummy or API)
   useEffect(() => {
-    const DUMMY_DATA = true; // switch to false when API is ready
+    const DUMMY_DATA = false; // switch to false when API is ready
 
     async function fetchMembers() {
-      let rawData: RawMember[];
+      let rawData: ApiMember[];
 
       if (DUMMY_DATA) {
-        rawData = rawMembers as RawMember[];
+        rawData = rawMembers as unknown as ApiMember[];
+
         await new Promise((res) => setTimeout(res, 800));
       } else {
         const res = await fetch("/api/members");
         const data = await res.json();
-        rawData = (data?.members ?? []) as RawMember[];
+        rawData = (data?.members ?? []) as ApiMember[];
       }
 
-      const mapped: MapMember[] = rawData.map((m, index) => {
-        const coords = countryCoords[m["Country Code"]]; // remove when backend is live
+      const mapped: MapMember[] = rawData.map((m) => {
+  const coords = countryCoords[m.countryCode];
 
-        return {
-          id: index + 1,
-          name: m["Voyage Role"] || "Unknown",
-          country: m["Country name (from Country)"],
-          lat: coords?.latitude ?? 0,
-          lng: coords?.longitude ?? 0,
-          gender: m.Gender, // extra fields for filtering
-          yearJoined: m.Timestamp.slice(0, 4),
-        } as MapMember & { gender: string; yearJoined: string };
-      });
+  return {
+    id: m.id,
+    name: m.role || "Unknown",
+    country: m.countryCode,
+    lat: coords?.latitude ?? 0,
+    lng: coords?.longitude ?? 0,
+    gender: m.gender,
+    yearJoined: String(m.yearJoined),
+  };
+});
+
 
       setMembers(mapped);
     }
