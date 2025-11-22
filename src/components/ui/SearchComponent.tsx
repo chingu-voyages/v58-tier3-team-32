@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import ChevronDown from "./icons/ChevronDown";
+import ChevronDown from "@/app/design-system/components/icons/ChevronDown";
 import { PageWrapper } from "@/app/component/layouts/PageWrapper";
 import { Button } from "./button";
 import { Label } from "@/app/component/typography";

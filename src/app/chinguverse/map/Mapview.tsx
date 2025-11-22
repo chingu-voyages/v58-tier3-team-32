@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
-
-import { PageWrapper } from "@/app/component/layouts/PageWrapper";
 import rawMembers from "@/data/members.json";
 import { countryCoords } from "@/data/countryCoords";
 import { MapMember, RawMember } from "@/types/membermodel";
@@ -110,10 +108,15 @@ useEffect(() => {
 }, [members, filters]);
 
   return (
-    <PageWrapper>
-      <div className="w-full h-[80vh]">
-        <MapContainer center={[20, 0]} zoom={2} style={{ width: "100%", height: "100%" }}>
-          <TileLayer
+    
+      <div className="w-full h-[80vh] relative z-0">
+        <MapContainer
+      center={[20, 0]}
+      zoom={2}
+      style={{ width: "100%", height: "100%" }}
+      className="z-0"
+    >
+      <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="© OpenStreetMap contributors"
           />
@@ -130,6 +133,6 @@ useEffect(() => {
           ))}
         </MapContainer>
       </div>
-    </PageWrapper>
+
   );
 }
