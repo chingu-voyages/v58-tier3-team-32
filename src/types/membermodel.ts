@@ -20,7 +20,7 @@ export type RawMember = {
 export type MapMember = {
   id: number;
   name: string;
-  country: string;
+  country?: string;
   lat: number;
   lng: number;
 

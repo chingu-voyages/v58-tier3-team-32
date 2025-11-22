@@ -11,11 +11,17 @@ import { MapMember, RawMember } from "@/types/membermodel";
 
 type MapViewProps = {
   filters?: {
-    gender?: string;
-    country?: string;
-    yearJoined?: string;
+    gender?: string[];
+    country?: string[];
+    yearJoined?: string[];
+    roleType?: string[];
+    voyageRole?: string[];
+    soloTier?: string[];
+    voyageTier?: string[];
+    voyageNo?: string[];
   };
 };
+
 
 // Dynamic imports
 const MapContainer = dynamic(
@@ -93,15 +99,15 @@ export default function MapView({ filters = {} }: MapViewProps) {
   }, []);
 
   // Apply filters whenever members or filters change
-  useEffect(() => {
-    const filtered = members.filter((m) => {
-      if (filters.gender && m.gender !== filters.gender) return false;
-      if (filters.country && m.country !== filters.country) return false;
-      if (filters.yearJoined && m.yearJoined !== filters.yearJoined) return false;
-      return true;
-    });
-    setFilteredMembers(filtered);
-  }, [members, filters]);
+useEffect(() => {
+  const filtered = members.filter((m) => {
+    if (filters.gender && filters.gender.length > 0 && m.gender && !filters.gender.includes(m.gender)) return false;
+    if (filters.country && filters.country.length > 0 && m.country && !filters.country.includes(m.country)) return false;
+    if (filters.yearJoined && filters.yearJoined.length > 0 && m.yearJoined && !filters.yearJoined.includes(m.yearJoined)) return false;
+    return true;
+  });
+  setFilteredMembers(filtered);
+}, [members, filters]);
 
   return (
     <PageWrapper>
