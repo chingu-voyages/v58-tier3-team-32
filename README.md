@@ -29,6 +29,7 @@ Optionally chat with an AI assistant to learn how to use the app.
 1. Create a `.env` file by copying from the `.env.example` file. Configure the environemnt variables if needed (defaults work for local development).
 1. Run `docker compose up -d` in your bash/command line to run the database in the background. This will also seed the database in the first run.
 1. Run `npm install` in your bash/command line to install the dependencies.
+1. Run `npx prisma generate` in your bash/command line to generate the Prisma Client.
 1. Run `npm run dev` in your bash/command line to run the development server.
 1. Visit the [website](http://localhost:3000) locally.
 

@@ -18,5 +18,12 @@ export async function getMembers(
     skip: (page - 1) * pageSize,
     take: pageSize,
     where: { ...filterParams, voyages },
+    include: {
+      voyages: {
+        omit: {
+          id: true,
+        },
+      },
+    },
   });
 }
