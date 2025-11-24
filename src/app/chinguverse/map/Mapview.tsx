@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
-
+import { countryNames } from "@/data/countryNames";
 import { countryCoordinates } from "@/data/countryCoords";
 import { ApiMember, MapMember} from "@/types/membermodel";
 
@@ -18,6 +18,14 @@ type MapViewProps = {
     voyageTier?: string[];
     voyageNo?: string[];
   };
+};
+
+type GroupedCountry = {
+  country?: string;
+  countryCode: string;
+  lat: number;
+  lng: number;
+  count: number;
 };
 
 
@@ -43,7 +51,7 @@ export default function MapView({ filters = {} }: MapViewProps) {
   const [members, setMembers] = useState<MapMember[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<MapMember[]>([]);
 
-  // Fix Leaflet default icons on client
+  // Fix Leaflet default icons
   useEffect(() => {
     async function fixLeafletIcons() {
       const L = (await import("leaflet")).default;
@@ -77,7 +85,7 @@ useEffect(() => {
     name: m.role
       ? m.role.replace(/([A-Z])/g, " $1").trim() // prettier role name
       : "Anonymous Member",
-    country: m.countryCode,
+    country: countryNames[m.countryCode] ?? m.countryCode,
       lat: coords[0],
       lng: coords[1],
       gender: m.gender,
@@ -108,6 +116,28 @@ useEffect(() => {
   setFilteredMembers(filtered);
 }, [members, filters]);
 
+// --- NEW: Group members by country ---
+  const groupedByCountry = Object.values(
+  filteredMembers.reduce<Record<string, GroupedCountry>>((acc, member) => {
+    const key = member.countryCode; // now typesafe
+
+      if (!acc[key]) {
+        acc[key] = {
+          country: member.country,
+          countryCode: member.countryCode,
+          lat: member.lat,
+          lng: member.lng,
+          count: 0,
+        };
+      }
+
+      acc[key].count += 1;
+      return acc;
+    }, {})
+  );
+
+
+
   return (
     
       <div className="w-full h-[80vh] relative z-0">
@@ -122,19 +152,20 @@ useEffect(() => {
             attribution="© OpenStreetMap contributors"
             noWrap={true} // prevents repeating tiles
           />
+{/* COUNTRY PIN MARKERS */}
+{groupedByCountry.map((c) => (
+  <Marker
+    key={c.countryCode}
+    position={[c.lat, c.lng]} 
+  >
+    <Popup>
+      <strong>{c.country}</strong><br />
+      Members: {c.count}
+    </Popup>
+  </Marker>
+))}
 
-          {filteredMembers.map((m) => (
-            <Marker key={m.id} position={[m.lat, m.lng]}>
-              <Popup>
-                <strong>{m.name}</strong> <br />
-                {m.country} <br />
-                {m.gender} <br />
-                Joined: {m.yearJoined}
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
-
+      </MapContainer>
+    </div>
   );
 }

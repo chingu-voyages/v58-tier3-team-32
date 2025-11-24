@@ -23,6 +23,7 @@ export type MapMember = {
   country?: string;
   lat: number;
   lng: number;
+  countryCode: string;
 
   // Extra fields for filtering/search
   gender?: string;
