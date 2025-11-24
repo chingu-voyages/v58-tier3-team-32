@@ -33,6 +33,10 @@ Optionally chat with an AI assistant to learn how to use the app.
 1. Run `npm run dev` in your bash/command line to run the development server.
 1. Visit the [website](http://localhost:3000) locally.
 
+## API Reference
+
+For more information on the available endpoints, please refer to the dedicated [API documentation file](./API_REFERENCE.md).
+
 ## Team Documents
 
 You may find these helpful as you work together to organize your project.
