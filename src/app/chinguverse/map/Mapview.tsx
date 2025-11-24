@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
-import rawMembers from "@/data/members.json";
-import { countryCoords } from "@/data/countryCoords";
+
+import { countryCoordinates } from "@/data/countryCoords";
 import { ApiMember, MapMember} from "@/types/membermodel";
 
 type MapViewProps = {
@@ -60,43 +60,42 @@ export default function MapView({ filters = {} }: MapViewProps) {
     fixLeafletIcons();
   }, []);
 
-  // Fetch members (dummy or API)
-  useEffect(() => {
-    const DUMMY_DATA = false; // switch to false when API is ready
+// Fetch members from API (live Prisma data)
+useEffect(() => {
+  async function fetchMembers() {
+    try {
+      const res = await fetch("/api/members");
+      const json = await res.json();
 
-    async function fetchMembers() {
-      let rawData: ApiMember[];
-
-      if (DUMMY_DATA) {
-        rawData = rawMembers as unknown as ApiMember[];
-
-        await new Promise((res) => setTimeout(res, 800));
-      } else {
-        const res = await fetch("/api/members");
-        const data = await res.json();
-        rawData = (data?.members ?? []) as ApiMember[];
-      }
+      // API returns { data: [...] }
+      const rawData = json.data as ApiMember[];
 
       const mapped: MapMember[] = rawData.map((m) => {
-  const coords = countryCoords[m.countryCode];
-
+   const coords = countryCoordinates[m.countryCode as keyof typeof countryCoordinates] ?? [0, 0];
   return {
     id: m.id,
-    name: m.role || "Unknown",
+    name: m.role
+      ? m.role.replace(/([A-Z])/g, " $1").trim() // prettier role name
+      : "Anonymous Member",
     country: m.countryCode,
-    lat: coords?.latitude ?? 0,
-    lng: coords?.longitude ?? 0,
-    gender: m.gender,
-    yearJoined: String(m.yearJoined),
-  };
-});
+      lat: coords[0],
+      lng: coords[1],
+      gender: m.gender,
+      yearJoined: String(m.yearJoined),
+    };
+  })
+  .filter(Boolean) as MapMember[];
 
 
       setMembers(mapped);
+    } catch (error) {
+      console.error("Failed to fetch members:", error);
     }
+  }
 
-    fetchMembers();
-  }, []);
+  fetchMembers();
+}, []);
+
 
   // Apply filters whenever members or filters change
 useEffect(() => {
@@ -121,6 +120,7 @@ useEffect(() => {
       <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="© OpenStreetMap contributors"
+            noWrap={true} // prevents repeating tiles
           />
 
           {filteredMembers.map((m) => (
