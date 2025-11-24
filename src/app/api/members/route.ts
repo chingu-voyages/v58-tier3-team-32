@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
   const soloProjectTier = searchParams.get("soloProjectTier");
   const voyageTier = searchParams.get("voyageTier") || undefined;
   const voyage = searchParams.get("voyage") || undefined;
+  const map = searchParams.get("map") !== null;
 
   // Filter Query Parameters (Non-Voyage)
   const filterParams: Record<string, string | number | null | undefined> = {
@@ -64,7 +65,8 @@ export async function GET(request: NextRequest) {
       page,
       pageSize,
       filterParams,
-      voyageFilterParams
+      voyageFilterParams,
+      map
     );
     return NextResponse.json({
       data: members,
