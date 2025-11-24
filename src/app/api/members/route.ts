@@ -10,6 +10,9 @@ export async function GET(request: NextRequest) {
   // Query Parameters (e.g. `/api/members?gender=Male`)
   const searchParams = request.nextUrl.searchParams;
 
+  const map = searchParams.get("map") !== null;
+  const page = parseInt(searchParams.get("page") ?? "1") || 1;
+  let pageSize = parseInt(searchParams.get("pageSize") ?? "10") || 10;
   const gender = searchParams.get("gender")?.toUpperCase();
   const countryCode = searchParams.get("countryCode")?.toUpperCase();
   const yearJoined = searchParams.get("yearJoined");
@@ -18,7 +21,6 @@ export async function GET(request: NextRequest) {
   const soloProjectTier = searchParams.get("soloProjectTier");
   const voyageTier = searchParams.get("voyageTier") || undefined;
   const voyage = searchParams.get("voyage") || undefined;
-  const map = searchParams.get("map") !== null;
 
   // Filter Query Parameters (Non-Voyage)
   const filterParams: Record<string, string | number | null | undefined> = {
@@ -51,9 +53,7 @@ export async function GET(request: NextRequest) {
     tier: voyageTier,
   };
 
-  // Page Query Parameters
-  const page = parseInt(searchParams.get("page") ?? "1") || 1;
-  let pageSize = parseInt(searchParams.get("pageSize") ?? "10") || 10;
+  // Adjust page size to between min and max
   if (pageSize > maxPageSize) {
     pageSize = maxPageSize;
   } else if (pageSize < minPageSize) {
