@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Member } from "@/types/member";
 import { formatMemberCountry, MemberWithCountryName } from "@/lib/country"
+import { useCallback } from "react";
 
 interface ApiResponse {
     data: Member[];
@@ -17,7 +18,7 @@ export function useMembers(scrollRootRef?: React.RefObject<HTMLElement | null>) 
     const attemptLockRef = useRef(false);
     const pageSize = 50;
 
-    const fetchMembers = async () => {
+    const fetchMembers = useCallback(async () => {
         if (isLoading || !hasMore) return;
         setIsLoading(true);
         try {
@@ -48,12 +49,12 @@ export function useMembers(scrollRootRef?: React.RefObject<HTMLElement | null>) 
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [page, pageSize, hasMore, isLoading]);
 
     // Initial fetch
     useEffect(() => {
         fetchMembers();
-    }, []);
+    }, [fetchMembers]);
 
     // IntersectionObserver for infinite scroll
     useEffect(() => {
@@ -68,7 +69,7 @@ export function useMembers(scrollRootRef?: React.RefObject<HTMLElement | null>) 
         }, { root, rootMargin: "400px 0px", threshold: 0.01 });
         observer.observe(target);
         return () => observer.disconnect();
-    }, [isLoading, hasMore, scrollRootRef?.current]);
+    }, [isLoading, hasMore, fetchMembers, scrollRootRef]);
 
     useEffect(() => {
         if (!isLoading) {
