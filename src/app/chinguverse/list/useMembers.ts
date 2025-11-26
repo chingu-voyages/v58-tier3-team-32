@@ -38,8 +38,12 @@ export function useMembers(scrollRootRef?: React.RefObject<HTMLElement | null>) 
             });
             setPage((prevPage) => prevPage + 1);
             setHasMore(json.data.length === pageSize);
-        } catch (error: any) {
-            setError(error.message || "An error occurred");
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError("An unknown error occurred");
+            }
             console.error("Error fetching members:", error);
         } finally {
             setIsLoading(false);
