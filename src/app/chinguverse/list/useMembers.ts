@@ -3,12 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import { Member } from "@/types/member";
 import { formatMemberCountry, MemberWithCountryName } from "@/lib/country"
 import { useCallback } from "react";
+import { SearchFilters } from "@/types/searchFilter";
+import { buildQueryString } from "@/lib/useSearchQuery";
 
 interface ApiResponse {
     data: Member[];
 }
 
-export function useMembers(scrollRootRef?: React.RefObject<HTMLElement | null>) {
+export function useMembers(scrollRootRef?: React.RefObject<HTMLElement | null>, filters?: SearchFilters) {
     const [members, setMembers] = useState<MemberWithCountryName[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -18,15 +20,21 @@ export function useMembers(scrollRootRef?: React.RefObject<HTMLElement | null>) 
     const isLoadingRef = useRef<boolean>(false);
     const hasMoreRef = useRef<boolean>(true);
     const pageSize = 50;
+    const filtersRef = useRef<SearchFilters | undefined>(filters);
+    useEffect(() => {
+        filtersRef.current = filters;
+    }, [filters]);
 
-    const fetchMembers = useCallback(async () => {
+    const fetchMembers = useCallback(async (currentFilters?: SearchFilters) => {
         if (isLoadingRef.current || !hasMoreRef.current) return;
         isLoadingRef.current = true;
         setIsLoading(true);
         try {
             const currentPage = pageRef.current;
+            const activeFilters = currentFilters ?? filtersRef.current;
+            const filterQuery = activeFilters ? buildQueryString(activeFilters) : "";
             const response = await fetch(
-                `/api/members?page=${currentPage}&pageSize=${pageSize}`
+                `/api/members?page=${currentPage}&pageSize=${pageSize}${filterQuery}`
             );
             const json: ApiResponse = await response.json();
 
@@ -57,8 +65,12 @@ export function useMembers(scrollRootRef?: React.RefObject<HTMLElement | null>) 
 
     // Initial fetch
     useEffect(() => {
-        fetchMembers();
-    }, [fetchMembers]);
+        if (!filters) return;
+        pageRef.current = 1;
+        hasMoreRef.current = true;
+        setMembers([]);
+        fetchMembers(filters);
+    }, [filters, fetchMembers]);
 
     // IntersectionObserver for infinite scroll
     useEffect(() => {
@@ -75,5 +87,5 @@ export function useMembers(scrollRootRef?: React.RefObject<HTMLElement | null>) 
         return () => observer.disconnect();
     }, [fetchMembers, scrollRootRef]);
 
-    return { members, isLoading, loaderRef, error };
+    return { members, isLoading, loaderRef, error, fetchMembers };
 }

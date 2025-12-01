@@ -1,18 +1,21 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { HeadlineXL, Body1 } from "@/app/component/typography";
 import { Divider } from "@/app/component/divider";
 import ListTable from "./ListTable";
 import { useMembers } from "./useMembers";
+import SearchComponent from "@/components/ui/SearchComponent";
+import { defaultSearchFilters } from "@/constants/searchDefaults";
+import { SearchFilters } from "@/types/searchFilter";
 
 export default function ListPageClient() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const { members, isLoading, loaderRef, error } = useMembers(scrollRef);
-
+  const [filters, setFilters] = useState(defaultSearchFilters);
+  const [appliedFilters, setAppliedFilters] = useState<SearchFilters | undefined>(undefined);
+  const { members, isLoading, loaderRef, error } = useMembers(scrollRef, appliedFilters);
   if (error) {
     return <div>Error loading members: {error}</div>;
   }
-
   return (
     <main>
       <HeadlineXL className="mb-6">Chingu Member Directory</HeadlineXL>
@@ -23,9 +26,14 @@ export default function ListPageClient() {
         location. Perfect for analyzing member distribution across the globe.
       </Body1>
       <Divider />
-      <div className="h-36 flex items-center justify-center">
-        <HeadlineXL>---Filters component placeholder---</HeadlineXL>
-      </div>
+      <SearchComponent
+        filters={filters}
+        setFilters={setFilters}
+        onSearch={(searchFilters = filters) => {
+          setAppliedFilters(searchFilters);
+        }}
+        results={members}
+        isLoading={isLoading} />
       <Divider />
       <ListTable members={members} isLoading={isLoading} loaderRef={loaderRef} scrollRef={scrollRef} />
     </main>
