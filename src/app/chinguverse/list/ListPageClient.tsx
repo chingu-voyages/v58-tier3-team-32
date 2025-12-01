@@ -12,10 +12,21 @@ export default function ListPageClient() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [filters, setFilters] = useState(defaultSearchFilters);
   const [appliedFilters, setAppliedFilters] = useState<SearchFilters | undefined>(undefined);
+  const [sortOption, setSortoption] = useState("");  
   const { members, isLoading, loaderRef, error } = useMembers(scrollRef, appliedFilters);
+  
   if (error) {
     return <div>Error loading members: {error}</div>;
   }
+  const sortedMembers = [...members]
+    if (sortOption === "country-asc") {
+    sortedMembers.sort((a, b) => a.countryName.localeCompare(b.countryName));
+  }
+
+  if (sortOption === "country-desc") {
+    sortedMembers.sort((a, b) => b.countryName.localeCompare(a.countryName));
+  }
+
   return (
     <main>
       <HeadlineXL className="mb-6">Chingu Member Directory</HeadlineXL>
@@ -34,8 +45,21 @@ export default function ListPageClient() {
         }}
         results={members}
         isLoading={isLoading} />
+       
+
       <Divider />
-      <ListTable members={members} isLoading={isLoading} loaderRef={loaderRef} scrollRef={scrollRef} />
+       <div className="flex justify-end my-4">
+        <select
+          value={sortOption}
+          onChange={(e) => setSortoption(e.target.value)}
+          className="border p-2 rounded"
+        >
+          <option value="">Sort Members By</option>
+          <option value="country-asc">Country (A–Z)</option>
+          <option value="country-desc">Country (Z–A)</option>
+          </select>
+      </div>
+      <ListTable members={sortedMembers} isLoading={isLoading} loaderRef={loaderRef} scrollRef={scrollRef} />
     </main>
   );
 }
