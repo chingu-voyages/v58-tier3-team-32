@@ -2,27 +2,20 @@
 
 import { useState } from "react";
 import MapView from "./Mapview";
-import SearchComponent, {
-  SearchFilters,
-} from "@/components/ui/SearchComponent";
-import { PageWrapper } from "@/app/component/layouts/PageWrapper";
+import SearchComponent from "@/components/ui/SearchComponent";
 import { Divider } from "@/app/component/divider";
 import { HeadlineXL, Body1 } from "@/app/component/typography";
+import { defaultSearchFilters } from "@/constants/searchDefaults";
+import { Pin } from '@/types/pin';
 
 export default function MapPageClient() {
-  const [filters, setFilters] = useState<SearchFilters>({
-    gender: [],
-    country: [],
-    yearJoined: [],
-    roleType: [],
-    voyageRole: [],
-    soloTier: [],
-    voyageTier: [],
-    voyageNo: [],
-  });
+  const [filters, setFilters] = useState(defaultSearchFilters);
+  const [appliedFilters, setAppliedFilters] = useState(defaultSearchFilters);
+  const [pins, setPins] = useState<Pin[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <PageWrapper>
+    <div className="h-full">
       <main className="p-2 space-y-6">
         <HeadlineXL>Member Demographics Map</HeadlineXL>
         <Body1>
@@ -33,17 +26,27 @@ export default function MapPageClient() {
           to spot global trends and explore the diverse Chingu community
           visually.
         </Body1>
-
-        {/* Search / Filters */}
-
+        {/* Search Filters */}
         <Divider />
-        <SearchComponent filters={filters} setFilters={setFilters} />
+        <SearchComponent
+          filters={filters}
+          setFilters={setFilters}
+          onSearch={(searchFilters = filters) => {
+            setAppliedFilters(searchFilters);
+          }}
+          results={pins}
+          isLoading={isLoading}
+        />
         <Divider />
         {/* Map */}
         <div className="h-[80vh]">
-          <MapView />
+          <MapView
+            filters={appliedFilters}
+            setPins={setPins}
+            setIsLoading={setIsLoading}
+          />
         </div>
       </main>
-    </PageWrapper>
+    </div>
   );
 }

@@ -5,6 +5,9 @@ import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 import { countryNames } from "@/data/countryNames";
 import { countryCoordinates } from "@/data/countryCoords";
+import { buildQueryString } from "@/lib/useSearchQuery";
+import { SearchFilters } from "@/types/searchFilter";
+import { Pin } from '@/types/pin';
 
 type BackendCountryGroup = {
   countryCode: string;
@@ -28,7 +31,15 @@ const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
   ssr: false,
 });
 
-export default function MapView() {
+export default function MapView({
+  filters,
+  setPins,
+  setIsLoading,
+}: {
+  filters: SearchFilters;
+  setPins: (pins: Pin[]) => void;
+  setIsLoading: (b: boolean) => void;
+}) {
   // Fix Leaflet default icons
   useEffect(() => {
     async function fixLeafletIcons() {
@@ -39,6 +50,7 @@ export default function MapView() {
         iconRetinaUrl:
           "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
         iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        shadowUrl: "",
       });
     }
 
@@ -58,8 +70,10 @@ export default function MapView() {
   // Fetch backend aggregated data
   useEffect(() => {
     async function fetchMapData() {
+      setIsLoading(true);
       try {
-        const res = await fetch("/api/members?map");
+        const filterQuery = buildQueryString(filters);
+        const res = await fetch(`/api/members?map${filterQuery}`);
         const json = await res.json();
 
         const rawData = json.data as BackendCountryGroup[];
@@ -79,26 +93,39 @@ export default function MapView() {
         });
 
         setGroupedCountries(mapped);
+        setPins(mapped)
       } catch (err) {
         console.error("Failed to fetch grouped members:", err);
+        setPins([]);
+      } finally {
+        setIsLoading(false);
       }
     }
-
     fetchMapData();
-  }, []);
-
+  }, [filters, setPins, setIsLoading]);
   return (
     <div className="w-full h-[80vh] relative z-0">
       <MapContainer
         center={[20, 0]}
         zoom={2}
-        style={{ width: "100%", height: "100%" }}
+        minZoom={2}
+        maxZoom={18}
+        maxBounds={[
+          [-85, -180],
+          [85, 180],
+        ]}
+        maxBoundsViscosity={1.0}
+        style={{ height: "100%" }}
         className="z-0"
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="© OpenStreetMap contributors"
           noWrap={true}
+          bounds={[
+            [-85, -180],
+            [85, 180]
+          ]}
         />
 
         {/* COUNTRY PIN MARKERS */}
