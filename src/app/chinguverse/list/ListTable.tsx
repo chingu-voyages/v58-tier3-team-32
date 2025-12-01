@@ -1,5 +1,11 @@
 "use client";
 import { MemberWithCountryName } from "@/lib/country";
+import {
+  genderOptions,
+  roleOptions,
+  roleTypeOptions,
+} from "@/constants/options";
+import { getLabelByValue } from "@/lib/formatLabels";
 
 type MemberProps = {
   members: MemberWithCountryName[];
@@ -26,8 +32,8 @@ export default function ListTable({
                 <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2">Gender</th>
                 <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2">Country</th>
                 <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Year Joined</th>
+                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Role</th>
                 <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Role Type</th>
-                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Voyage Role</th>
                 <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Solo Project Tier</th>
                 <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Voyage Tier</th>
                 <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Voyage #</th>
@@ -37,11 +43,11 @@ export default function ListTable({
               {members.map((m) => (
                 <tr key={m.id}>
                   {/* <td>{m.appliedDate}</td> */}
-                  <td className="border-b border-[var(--border)] p-1">{m.gender}</td>
+                  <td className="border-b border-[var(--border)] p-1">{getLabelByValue(genderOptions, m.gender)}</td>
                   <td className="border-b border-[var(--border)] p-1">{m.countryName}</td>
                   <td className="border-b border-[var(--border)] p-1">{m.yearJoined}</td>
-                  <td className="border-b border-[var(--border)] p-1">{m.roleType || "-"}</td>
-                  <td className="border-b border-[var(--border)] p-1">{m.role || "-"}</td>
+                  <td className="border-b border-[var(--border)] p-1">{getLabelByValue(roleOptions, m.role) || "-"}</td>
+                  <td className="border-b border-[var(--border)] p-1">{getLabelByValue(roleTypeOptions, m.roleType) || "-"}</td>
                   <td className="border-b border-[var(--border)] p-1">
                     {m.soloProjectTier === "None" || !m.soloProjectTier
                       ? "-"
