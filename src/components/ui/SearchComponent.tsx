@@ -1,167 +1,152 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ChevronDown from "@/app/design-system/components/icons/ChevronDown";
-import { PageWrapper } from "@/app/component/layouts/PageWrapper";
 import { Button } from "./button";
 import { Label } from "@/app/component/typography";
-
-export type SearchFilters = {
-  gender: string[];
-  country: string[];
-  yearJoined: string[];
-  roleType: string[];
-  voyageRole: string[];
-  soloTier: string[];
-  voyageTier: string[];
-  voyageNo: string[];
-};
-
-
+import { SearchFilters, SearchFilterLabel } from "@/types/searchFilter";
+import { defaultSearchFilters } from "@/constants/searchDefaults";
+import {
+  genderOptions,
+  countryOptions,
+  yearJoinedOptions,
+  roleOptions,
+  roleTypeOptions,
+  soloProjectTierOptions,
+  voyageTierOptions,
+  voyageNoOptions,
+} from "@/constants/options";
+import NoResultsModal from "./NoResultsModal";
 
 export type SearchProps = {
   filters: SearchFilters;
   setFilters: React.Dispatch<React.SetStateAction<SearchFilters>>;
+  onSearch: (filters?: SearchFilters) => void;
+  results?: unknown[]; // to accept Pin and MemberWithCountryName for now
+  isLoading?: boolean;
 };
 
-export default function SearchComponent({ filters, setFilters }: SearchProps) {
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
-  const options = {
-    Gender: ["Male", "Female"],
-    Country: ["USA", "Canada", "UK", "Nigeria"],
-    "Year Joined": ["2020", "2021", "2022", "2023"],
-    "Role Type": ["Web", "UI/UX", "Phython"],
-    "Voyage Role": ["Scrum Master", "Developer", "Designer"],
-    "Solo Tier": [],
-    "Voyage Tier":["Tier 1", "Tier 2", "Tier 3"],
-    "Voyage No": ["V56", "V57", "V58"],
-
-  } as const;
-
-  const labelToKeyMap = {
-    Gender: "gender",
-    Country: "country",
+const labelToKeyMap: Record<SearchFilterLabel, keyof SearchFilters> = {
+  Gender: "gender",
+  Country: "country",
   "Year Joined": "yearJoined",
+  Role: "role",
   "Role Type": "roleType",
-  "Voyage Role": "voyageRole",
-  "Solo Tier": "soloTier",
+  "Solo Project Tier": "soloProjectTier",
   "Voyage Tier": "voyageTier",
-  "Voyage No": "voyageNo",
+  "Voyage #": "voyageNo",
+};
+
+export default function SearchComponent({ filters, setFilters, onSearch, results, isLoading }: SearchProps) {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [searchInitiated, setSearchInitiated] = useState(false);
+  const [showNoResults, setShowNoResults] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const options = {
+    Gender: genderOptions,
+    Country: countryOptions,
+    "Year Joined": yearJoinedOptions,
+    Role: roleOptions,
+    "Role Type": roleTypeOptions,
+    "Solo Project Tier": soloProjectTierOptions,
+    "Voyage Tier": voyageTierOptions,
+    "Voyage #": voyageNoOptions,
   } as const;
 
- const handleSelect = (label: keyof typeof labelToKeyMap, value: string) => {
-  const key = labelToKeyMap[label];
-
-  setFilters((prev) => {
-    const prevArray = prev[key]; // now an array
-    if (prevArray.includes(value)) {
-      // remove if already selected
-      return { ...prev, [key]: prevArray.filter((v) => v !== value) };
-    } else {
-      // add new value
-      return { ...prev, [key]: [...prevArray, value] };
-    }
-  });
-
-  setOpenDropdown(null); // close dropdown after selection
-};
-
-
-  const handleSearch = async () => {
-  console.log("SEARCH TRIGGERED");
-  console.table(filters);
-
-  // TODO: Enable when backend API is ready
-  // const query = new URLSearchParams(filters as any).toString();
-  // const res = await fetch(`/api/members?${query}`);
-  // const data = await res.json();
-  // setTeamMembers(data);
-};
-
-  
-const handleClear = () => {
-   
-    setFilters({
-      gender: [],
-      country: [],
-      yearJoined: [],
-      roleType: [],
-      voyageRole: [],
-      soloTier: [],
-      voyageTier: [],
-      voyageNo: [],
-    });
+  const handleSelect = (key: keyof SearchFilters, value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: prev[key] === value ? null : value,
+    }));
+    setOpenDropdown(null);
   };
 
+  const handleClear = () => {
+    setFilters({ ...defaultSearchFilters });
+    setSearchInitiated(true);
+    setShowNoResults(false);
+    onSearch({ ...defaultSearchFilters });
+  };
 
-return (
-<PageWrapper>
-{/* Filters Row */}
-<div className="w-full flex justify-center gap-8 mb-4 relative">
-{Object.keys(options).map((label) => {
-const typedLabel = label as keyof typeof options;
+  const handleSearchClick = () => {
+    setSearchInitiated(true);
+    setShowNoResults(false);
+    onSearch();
+  };
 
-return (
-<div key={label} className="relative">
-{/* Header Button */}
-<button
-onClick={() =>
-  setOpenDropdown(openDropdown === label ? null : label)
-}
-className="flex items-center gap-1 text-gray-700 hover:text-black"
->
-<Label>
-    {label.toUpperCase()}:{" "}
-    {filters[labelToKeyMap[label as keyof typeof labelToKeyMap]].length > 0
-      ? `(${filters[labelToKeyMap[label as keyof typeof labelToKeyMap]].length})`
-      : ""}
-  </Label>
-<ChevronDown className="w-4 h-4" />
-</button>
-
-{/* Dropdown with Checkboxes */}
-{openDropdown === label && (
-<div className="absolute top-8 left-0 bg-white shadow-md border rounded-md p-2 z-[9999] min-w-[150px]">
-{options[typedLabel].map((option) => {
-const key = labelToKeyMap[label as keyof typeof labelToKeyMap];
-const isChecked = filters[key].includes(option);
-
-return (
-<label
-  key={option}
-  className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer rounded"
->
-  <input
-    type="checkbox"
-    checked={isChecked}
-    onChange={() =>
-      handleSelect(
-        label as keyof typeof labelToKeyMap,
-        option
-      )
+  useEffect(() => {
+    if (searchInitiated && !isLoading && results && results.length === 0) {
+      setShowNoResults(true);
+    } else {
+      setShowNoResults(false);
     }
-    className="w-4 h-4 cursor-pointer"
-  />
-  <span>{option}</span>
-</label>
-);
-})}
-</div>
-)}
-</div>
-);
-})}
-</div>
+  }, [results, isLoading, searchInitiated]);
 
-{/* Centered Buttons Row */}
-<div className="w-full flex justify-center gap-50 mt-8">
-<Button size="lg" onClick={handleSearch}>Search</Button>
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+        setShowNoResults(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
-<Button size="lg" variant="secondary" onClick={handleClear}>
-Clear
-</Button>
-</div>
-</PageWrapper>
-);
+  return (
+    <div className="w-full relative" ref={containerRef}>
+      <NoResultsModal visible={showNoResults} onClose={() => setShowNoResults(false)} />
+      <div className="flex gap-8 mb-4 min-w-max justify-between relative">
+        {Object.keys(options).map((label) => {
+          const typedLabel = label as keyof typeof options;
+          const key = labelToKeyMap[typedLabel];
+          const selectedLabel =
+            filters[key] != null
+              ? options[typedLabel].find((opt) => opt.value === filters[key])?.label ?? ""
+              : "";
+
+          return (
+            <div key={label} className="relative">
+              {/* Dropdown Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenDropdown(openDropdown === typedLabel ? null : typedLabel)
+                }}
+                className="flex items-center gap-1 text-gray-700 hover:text-black"
+              >
+                <Label>
+                  <span>{typedLabel}</span>
+                  {selectedLabel && <span className="block">({selectedLabel})</span>}
+                </Label>
+                <ChevronDown />
+              </button>
+
+              {openDropdown === typedLabel && (
+                <div className="absolute top-full left-0 bg-white shadow-md border rounded-md p-2 z-50 min-w-[150px] max-h-60 overflow-auto">
+                  {options[typedLabel].map((opt) => (
+                    <div
+                      key={opt.value}
+                      className={`p-2 cursor-pointer rounded hover:bg-gray-100 ${filters[key] === opt.value ? "bg-gray-200" : ""
+                        }`}
+                      onClick={() => handleSelect(key, opt.value)}
+                    >
+                      {opt.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {/* Centered Buttons Row */}
+      <div className="w-full flex justify-center gap-50 mt-8">
+        <Button size="lg" onClick={handleSearchClick}>Search</Button>
+        <Button size="lg" variant="secondary" onClick={handleClear}>
+          Clear
+        </Button>
+      </div>
+    </div >
+  );
 }
