@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import "leaflet/dist/leaflet.css";
+import ChatWindow from "./component/chat";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,8 +32,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        <main className="mt-16">{children}</main>
+        <main className="mt-16">{children}
+          <ChatWindow />
+        </main>
         <Footer />
+        
       </body>
     </html>
   );
