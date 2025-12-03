@@ -42,6 +42,10 @@ export default function SearchComponent({ filters, setFilters, onSearch, results
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [showNoResults, setShowNoResults] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [searchKeyBuffer, setSearchKeyBuffer] = useState("");
+  const bufferTimeout = useRef<NodeJS.Timeout | null>(null);
+
   const options = {
     Gender: genderOptions,
     Country: countryOptions,
@@ -74,6 +78,32 @@ export default function SearchComponent({ filters, setFilters, onSearch, results
     onSearch();
   };
 
+  const handleTypeSearch = (
+  e: React.KeyboardEvent<HTMLDivElement>,
+  label: keyof typeof options
+) => {
+  const list = options[label];
+
+  const char = e.key.toLowerCase();
+
+  if (!/^[a-z0-9]$/i.test(char)) return;
+
+  if (bufferTimeout.current) clearTimeout(bufferTimeout.current);
+  bufferTimeout.current = setTimeout(() => setSearchKeyBuffer(""), 500);
+
+  const newBuffer = searchKeyBuffer + char;
+  setSearchKeyBuffer(newBuffer);
+
+  const match = list.find((opt) =>
+    opt.label.toLowerCase().startsWith(newBuffer)
+  );
+
+  if (!match) return;
+
+  const element = document.getElementById(`opt-${label}-${match.value}`);
+  if (element) element.scrollIntoView({ block: "nearest" });
+};
+
   useEffect(() => {
     if (searchInitiated && !isLoading && results && results.length === 0) {
       setShowNoResults(true);
@@ -92,6 +122,13 @@ export default function SearchComponent({ filters, setFilters, onSearch, results
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+  if (openDropdown && dropdownRef.current) {
+    dropdownRef.current.focus();
+  }
+}, [openDropdown]);
+
 
   return (
     <div className="w-full relative" ref={containerRef}>
@@ -123,9 +160,14 @@ export default function SearchComponent({ filters, setFilters, onSearch, results
               </button>
 
               {openDropdown === typedLabel && (
-                <div className="absolute top-full left-0 bg-white shadow-md border rounded-md p-2 z-50 min-w-[150px] max-h-60 overflow-auto">
+                <div 
+                ref={dropdownRef}
+                tabIndex={0}
+                onKeyDown={(e) => handleTypeSearch(e, typedLabel)}
+                className="absolute top-full left-0 bg-white shadow-md border rounded-md p-2 z-50 min-w-[150px] max-h-60 overflow-auto">
                   {options[typedLabel].map((opt) => (
                     <div
+                      id={`opt-${typedLabel}-${opt.value}`}
                       key={opt.value}
                       className={`p-2 cursor-pointer rounded hover:bg-gray-100 ${filters[key] === opt.value ? "bg-gray-200" : ""
                         }`}
