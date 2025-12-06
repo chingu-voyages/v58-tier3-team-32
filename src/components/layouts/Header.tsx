@@ -47,7 +47,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 border-b border-[var(--border)]">
-      <div className="flex items-center justify-between mx-auto px-4 sm:px-6 lg:px-24 h-16 bg-[var(--primary)]">
+      <div className="flex items-center justify-between mx-auto px-4 sm:px-6 lg:px-24 h-16 bg-[var(--primary)] md:grid md:grid-cols-[1fr_auto_1fr]">
         <Link href="/" className="flex h-full items-center">
           <Image
             src="/images/chinguverse-logo.png"
@@ -66,7 +66,7 @@ export default function Header() {
             </Link>
           ))}
         </nav>
-        <div className="hidden md:flex">
+        <div className="hidden justify-end md:flex">
           <Body1>{today}</Body1>
         </div>
         <div className="sm:hidden">
