@@ -41,7 +41,7 @@ export default function MapPageClient() {
         />
         <Divider />
         {/* Map */}
-        <div className="h-[80vh]">
+        <div className="h-[80vh] m-6">
           <MapView
             filters={appliedFilters}
             setPins={setPins}
