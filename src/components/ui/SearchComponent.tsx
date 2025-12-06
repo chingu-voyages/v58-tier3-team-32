@@ -146,7 +146,7 @@ export default function SearchComponent({
         visible={showNoResults}
         onClose={() => setShowNoResults(false)}
       />
-      <div className="flex gap-8 mb-4 min-w-max justify-between relative">
+      <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center relative ">
         {Object.keys(options).map((label) => {
           const typedLabel = label as keyof typeof options;
           const key = labelToKeyMap[typedLabel];
