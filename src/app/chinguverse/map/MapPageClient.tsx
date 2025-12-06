@@ -6,7 +6,7 @@ import SearchComponent from "@/components/ui/SearchComponent";
 import { Divider } from "@/app/component/divider";
 import { HeadlineXL, Body1 } from "@/app/component/typography";
 import { defaultSearchFilters } from "@/constants/searchDefaults";
-import { Pin } from '@/types/pin';
+import { Pin } from "@/types/pin";
 
 export default function MapPageClient() {
   const [filters, setFilters] = useState(defaultSearchFilters);
@@ -16,9 +16,11 @@ export default function MapPageClient() {
 
   return (
     <div className="h-full">
-      <main className="p-2 space-y-6">
-        <HeadlineXL>Member Demographics Map</HeadlineXL>
-        <Body1>
+      <main className="space-y-6">
+        <HeadlineXL className="my-4 mb-6 text-center">
+          Member Demographics Map
+        </HeadlineXL>
+        <Body1 className="text-justify px-8 lg:px-12">
           Our interactive map displays Chingu members around the world. Each
           marker represents a member, and you can click on it to see details
           such as role, tier, and timezone. Use the filters to narrow down by
