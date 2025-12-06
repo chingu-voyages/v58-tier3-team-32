@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="mx-auto px-4 sm:px-6 lg:px-24 py-6 flex flex-col gap-2 items-center text-center">
         <Body1>
           &copy; {new Date().getFullYear()} Chingu, Inc. This work is licensed
-          under the GNU General Public License v3.0 or later.
+          under the GNU General Public License v3.0.
         </Body1>
         <Body1>
           <span className="flex gap-2 items-center">
