@@ -118,3 +118,6 @@
   color: var(--text-link-hover);
 }
 
+button {
+  cursor: pointer;
+}
