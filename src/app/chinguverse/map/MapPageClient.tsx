@@ -41,12 +41,14 @@ export default function MapPageClient() {
         />
         <Divider />
         {/* Map */}
-        <div className="h-[80vh] m-6">
-          <MapView
-            filters={appliedFilters}
-            setPins={setPins}
-            setIsLoading={setIsLoading}
-          />
+        <div className="border-2 m-6">
+          <div className="h-[80vh]">
+            <MapView
+              filters={appliedFilters}
+              setPins={setPins}
+              setIsLoading={setIsLoading}
+            />
+          </div>
         </div>
       </main>
     </div>
