@@ -21,7 +21,7 @@ export default function ListTable({
   scrollRef,
 }: MemberProps) {
   return (
-    <section className="my-8">
+    <section className="my-8 mx-4">
       <div className="border-2 border-[var(--border)] rounded-lg overflow-hidden">
         <div ref={scrollRef} className="overflow-auto h-[60vh]">
           <table
