@@ -7,7 +7,7 @@ import { countryNames } from "@/data/countryNames";
 import { countryCoordinates } from "@/data/countryCoords";
 import { buildQueryString } from "@/lib/useSearchQuery";
 import { SearchFilters } from "@/types/searchFilter";
-import { Pin } from '@/types/pin';
+import { Pin } from "@/types/pin";
 
 type BackendCountryGroup = {
   countryCode: string;
@@ -93,7 +93,7 @@ export default function MapView({
         });
 
         setGroupedCountries(mapped);
-        setPins(mapped)
+        setPins(mapped);
       } catch (err) {
         console.error("Failed to fetch grouped members:", err);
         setPins([]);
@@ -124,7 +124,7 @@ export default function MapView({
           noWrap={true}
           bounds={[
             [-85, -180],
-            [85, 180]
+            [85, 180],
           ]}
         />
 
