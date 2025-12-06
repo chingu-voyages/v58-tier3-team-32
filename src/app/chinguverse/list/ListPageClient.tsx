@@ -34,8 +34,10 @@ export default function ListPageClient() {
 
   return (
     <main>
-      <HeadlineXL className="mb-6">Chingu Member Directory</HeadlineXL>
-      <Body1 className="mb-6">
+      <HeadlineXL className="my-4 text-center">
+        Chingu Member Directory
+      </HeadlineXL>
+      <Body1 className="mb-6 text-justify px-8 md:px-12 lg:px-16">
         Browse Chingu members in a searchable list. Quickly filter by role,
         tier, country, or other attributes to explore patterns in the community.
         Each entry provides a quick summary of the member’s role, tier, and
