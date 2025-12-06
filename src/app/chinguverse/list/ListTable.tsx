@@ -24,30 +24,83 @@ export default function ListTable({
     <section className="my-8">
       <div className="border-2 border-[var(--border)] rounded-lg overflow-hidden">
         <div ref={scrollRef} className="overflow-auto h-[60vh]">
-          <table className="min-w-full table-fixed border-separate text-center" aria-busy={isLoading}>
+          <table
+            className="min-w-full table-fixed border-separate text-center"
+            aria-busy={isLoading}
+          >
             <caption className="sr-only">Members list</caption>
             <thead>
               <tr>
                 {/* <th>Applied Date</th> */}
-                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2">Gender</th>
-                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2">Country</th>
-                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Year Joined</th>
-                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Role</th>
-                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Role Type</th>
-                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Solo Project Tier</th>
-                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Voyage Tier</th>
-                <th scope="col" className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap">Voyage #</th>
+                <th
+                  scope="col"
+                  className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2"
+                >
+                  Gender
+                </th>
+                <th
+                  scope="col"
+                  className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2"
+                >
+                  Country
+                </th>
+                <th
+                  scope="col"
+                  className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap"
+                >
+                  Year Joined
+                </th>
+                <th
+                  scope="col"
+                  className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap"
+                >
+                  Role
+                </th>
+                <th
+                  scope="col"
+                  className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap"
+                >
+                  Role Type
+                </th>
+                <th
+                  scope="col"
+                  className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap"
+                >
+                  Solo Project Tier
+                </th>
+                <th
+                  scope="col"
+                  className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap"
+                >
+                  Voyage Tier
+                </th>
+                <th
+                  scope="col"
+                  className="sticky top-0 z-10 bg-[var(--background)] border-b-2 border-[var(--border)] p-2 whitespace-nowrap"
+                >
+                  Voyage #
+                </th>
               </tr>
             </thead>
             <tbody>
               {members.map((m) => (
                 <tr key={m.id}>
                   {/* <td>{m.appliedDate}</td> */}
-                  <td className="border-b border-[var(--border)] p-1">{getLabelByValue(genderOptions, m.gender)}</td>
-                  <td className="border-b border-[var(--border)] p-1">{m.countryName}</td>
-                  <td className="border-b border-[var(--border)] p-1">{m.yearJoined}</td>
-                  <td className="border-b border-[var(--border)] p-1">{getLabelByValue(roleOptions, m.role) || "-"}</td>
-                  <td className="border-b border-[var(--border)] p-1">{getLabelByValue(roleTypeOptions, m.roleType) || "-"}</td>
+                  <td className="border-b border-[var(--border)] p-1">
+                    {getLabelByValue(genderOptions, m.gender)}
+                  </td>
+                  <td className="border-b border-[var(--border)] p-1">
+                    {m.countryName}
+                  </td>
+                  <td className="border-b border-[var(--border)] p-1">
+                    {m.yearJoined}
+                  </td>
+                  <td className="border-b border-[var(--border)] p-1">
+                    {getLabelByValue(roleOptions, m.role) || "-"}
+                  </td>
+                  <td className="border-b border-[var(--border)] p-1">
+                    {getLabelByValue(roleTypeOptions, m.roleType) || "-"}
+                  </td>
                   <td className="border-b border-[var(--border)] p-1">
                     {m.soloProjectTier === "None" || !m.soloProjectTier
                       ? "-"
@@ -67,7 +120,13 @@ export default function ListTable({
               ))}
               {isLoading && (
                 <tr>
-                  <td className="px-10 text-left" colSpan={8} aria-live="polite">Loading...</td>
+                  <td
+                    className="px-10 text-left"
+                    colSpan={8}
+                    aria-live="polite"
+                  >
+                    Loading...
+                  </td>
                 </tr>
               )}
             </tbody>

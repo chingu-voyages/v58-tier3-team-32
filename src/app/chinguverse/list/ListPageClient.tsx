@@ -11,15 +11,20 @@ import { SearchFilters } from "@/types/searchFilter";
 export default function ListPageClient() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [filters, setFilters] = useState(defaultSearchFilters);
-  const [appliedFilters, setAppliedFilters] = useState<SearchFilters | undefined>(undefined);
-  const [sortOption, setSortoption] = useState("");  
-  const { members, isLoading, loaderRef, error } = useMembers(scrollRef, appliedFilters);
-  
+  const [appliedFilters, setAppliedFilters] = useState<
+    SearchFilters | undefined
+  >(undefined);
+  const [sortOption, setSortoption] = useState("");
+  const { members, isLoading, loaderRef, error } = useMembers(
+    scrollRef,
+    appliedFilters
+  );
+
   if (error) {
     return <div>Error loading members: {error}</div>;
   }
-  const sortedMembers = [...members]
-    if (sortOption === "country-asc") {
+  const sortedMembers = [...members];
+  if (sortOption === "country-asc") {
     sortedMembers.sort((a, b) => a.countryName.localeCompare(b.countryName));
   }
 
@@ -44,11 +49,11 @@ export default function ListPageClient() {
           setAppliedFilters(searchFilters);
         }}
         results={members}
-        isLoading={isLoading} />
-       
+        isLoading={isLoading}
+      />
 
       <Divider />
-       <div className="flex justify-end my-4">
+      <div className="flex justify-end my-4">
         <select
           value={sortOption}
           onChange={(e) => setSortoption(e.target.value)}
@@ -57,9 +62,14 @@ export default function ListPageClient() {
           <option value="">Sort Members By</option>
           <option value="country-asc">Country (A–Z)</option>
           <option value="country-desc">Country (Z–A)</option>
-          </select>
+        </select>
       </div>
-      <ListTable members={sortedMembers} isLoading={isLoading} loaderRef={loaderRef} scrollRef={scrollRef} />
+      <ListTable
+        members={sortedMembers}
+        isLoading={isLoading}
+        loaderRef={loaderRef}
+        scrollRef={scrollRef}
+      />
     </main>
   );
 }
