@@ -6,6 +6,8 @@ import { HeadlineXL, Subheading1, Subheading2, Headline, Body1, Body2, Caption, 
 import { Button } from "@/components/ui/button";
 import ChevronDown from "@/app/design-system/components/icons/ChevronDown";
 import GitHub from "@/app/design-system/components/icons/GitHub";
+import Login from "./components/icons/Login";
+import Logout from "./components/icons/Logout";
 
 export default function DesignSystemPage() {
   const colors = [
@@ -90,6 +92,14 @@ export default function DesignSystemPage() {
           <p className="inline-flex items-center gap-1">
             <GitHub />
             This is a responsive GitHub icon
+          </p><br />
+          <p className="inline-flex items-center gap-1">
+            <Login />
+            This is a Login icon
+          </p><br />
+          <p className="inline-flex items-center gap-1">
+            <Logout />
+            This is a Logout icon
           </p>
         </section>
       </main>
