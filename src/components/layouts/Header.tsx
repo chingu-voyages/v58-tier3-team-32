@@ -5,9 +5,17 @@ import { Subheading1, Body1 } from "@/app/component/typography";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import MobileMenu from "./MobileMenu";
+import { useContext, useState, useEffect } from "react";
+import { AuthContext } from "@/app/chinguverse/auth/AuthContext";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
+import Login from "@/app/design-system/components/icons/Login";
+import Logout from "@/app/design-system/components/icons/Logout";
 
 export default function Header() {
   const pathname = usePathname();
+  const { user } = useContext(AuthContext);
+  const [mounted, setMounted] = useState(false);
 
   let navItems: { label: string; href: string }[] = [];
 
@@ -45,6 +53,10 @@ export default function Header() {
     day: "numeric",
   });
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 w-full z-50 border-b border-[var(--border)]">
       <div className="flex items-center justify-between mx-auto px-4 sm:px-6 lg:px-24 h-16 bg-[var(--primary)] md:grid md:grid-cols-[1fr_auto_1fr]">
@@ -69,6 +81,18 @@ export default function Header() {
         <div className="hidden justify-end md:flex">
           <Body1>{today}</Body1>
         </div>
+        {mounted && (user ? (
+          <button
+            onClick={() => signOut(auth)}
+          >
+            <Logout />
+          </button>
+        ) : (
+          <Link href="/chinguverse/auth/login" className="text-[var(--text-link)] hover:text-[var(--text-link-hover)]">
+            <Login />
+          </Link>
+        )
+        )}
         <div className="sm:hidden">
           <MobileMenu navItems={navItems} />
         </div>
