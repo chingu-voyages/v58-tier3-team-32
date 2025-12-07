@@ -5,6 +5,7 @@ import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import "leaflet/dist/leaflet.css";
 import ChatWindow from "./component/chat";
+import { AuthProvider } from "./chinguverse/auth/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,12 +32,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        <main className="mt-16">{children}
-          <ChatWindow />
-        </main>
-        <Footer />
-        
+        <AuthProvider>
+          <Header />
+          <main className="mt-16">{children}
+            <ChatWindow />
+          </main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
