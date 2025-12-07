@@ -6,8 +6,11 @@ import { Minus, Send } from "lucide-react";
 import { useClickAway } from "@uidotdev/usehooks";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
+import { useAuth } from "@/app/chinguverse/auth/AuthContext";
 
 export default function ChatWindow() {
+  // Chatbot is only available for logged-in users
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
   const [input, setInput] = useState("");
@@ -64,18 +67,21 @@ export default function ChatWindow() {
       setIsLoading(false);
     }
   };
-if (!isOpen) {
-  return (
-    <Image
-      src="/aichat.svg"
-      alt="Chat Icon"
-      width={100}
-      height={100}
-      onClick={() => setIsOpen(true)}
-      className="fixed bottom-4 right-4 bg-primary p-3 transition-transform  rounded-full hover:scale-110 cursor-pointer"
-    />
-  );
-}
+
+  if (!user) return null;
+
+  if (!isOpen) {
+    return (
+      <Image
+        src="/aichat.svg"
+        alt="Chat Icon"
+        width={100}
+        height={100}
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-4 right-4 bg-primary p-3 transition-transform  rounded-full hover:scale-110 cursor-pointer"
+      />
+    );
+  }
 
   return (
     <div
@@ -127,7 +133,7 @@ if (!isOpen) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-           className="flex-1 border rounded-l-md px-3 py-2 text-stone-950 focus:outline-none focus:ring-2 focus:ring-[#54360F]"
+          className="flex-1 border rounded-l-md px-3 py-2 text-stone-950 focus:outline-none focus:ring-2 focus:ring-[#54360F]"
           placeholder="Ask about ChinguVerse..."
           disabled={isLoading}
         />
