@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Subheading1, Body1 } from "@/app/component/typography";
+import { Subheading1, Label } from "@/app/component/typography";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import MobileMenu from "./MobileMenu";
@@ -47,7 +47,7 @@ export default function Header() {
   }
 
   const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
+    weekday: "short",
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -78,23 +78,22 @@ export default function Header() {
             </Link>
           ))}
         </nav>
-        <div className="hidden justify-end md:flex">
-          <Body1>{today}</Body1>
-        </div>
-        {mounted && (user ? (
-          <button
-            onClick={() => signOut(auth)}
-          >
-            <Logout />
-          </button>
-        ) : (
-          <Link href="/chinguverse/auth/login" className="text-[var(--text-link)] hover:text-[var(--text-link-hover)]">
-            <Login />
-          </Link>
-        )
-        )}
-        <div className="sm:hidden">
-          <MobileMenu navItems={navItems} />
+        <div className="flex items-center justify-end gap-4">
+          <Label className="hidden md:flex">{today}</Label>
+          {mounted && (user ? (
+            <button
+              onClick={() => signOut(auth)}
+            >
+              <Logout />
+            </button>
+          ) : (
+            <Link href="/chinguverse/auth/login" className="text-[var(--text-link)] hover:text-[var(--text-link-hover)]">
+              <Login />
+            </Link>
+          ))}
+          <div className="sm:hidden">
+            <MobileMenu navItems={navItems} />
+          </div>
         </div>
       </div>
     </header>
