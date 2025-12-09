@@ -23,7 +23,7 @@ export async function aiChat(msg: string) {
     const fullPrompt = `${systemPrompt}\n\nUser Question: ${msg}`;
 
     const result = await genAI.models.generateContent({
-      model: "gemini-2.0-flash-001",
+      model: "gemini-2.5-flash",
       contents: [{ text: fullPrompt }],
     });
 
