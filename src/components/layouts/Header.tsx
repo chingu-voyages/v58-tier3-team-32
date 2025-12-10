@@ -78,7 +78,7 @@ export default function Header() {
             </Link>
           ))}
         </nav>
-        <div className="flex items-center justify-end gap-4">
+        <div className="flex items-center justify-end gap-4 sm:mr-10 md:mr-0">
           <Label className="hidden md:flex">{today}</Label>
           {mounted &&
             (user ? (
