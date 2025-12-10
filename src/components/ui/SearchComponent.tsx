@@ -204,11 +204,11 @@ export default function SearchComponent({
       </div>
       {/* Centered Buttons Row */}
       <div className="w-full flex justify-center gap-50 mt-8">
-        <Button size="lg" onClick={handleSearchClick}>
-          Search
-        </Button>
         <Button size="lg" variant="secondary" onClick={handleClear}>
           Clear
+        </Button>
+        <Button size="lg" onClick={handleSearchClick}>
+          Search
         </Button>
       </div>
     </div>
