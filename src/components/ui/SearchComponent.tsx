@@ -203,7 +203,7 @@ export default function SearchComponent({
         })}
       </div>
       {/* Centered Buttons Row */}
-      <div className="w-full flex justify-center gap-50 mt-8">
+      <div className="w-full flex justify-around md:justify-center md:gap-40 mt-8">
         <Button size="lg" onClick={handleSearchClick}>
           Search
         </Button>
