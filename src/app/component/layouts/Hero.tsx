@@ -15,12 +15,12 @@ export default function Hero() {
         based on role, tier, or location. Start exploring the map or browse the
         member list to learn more about your fellow Chingus!
       </Body1>
-      <div className="mx-4 md:mx-8 relative h-[60vw] sm:h-[40vw] md:h-[30vw] my-4 border-2 border-[var(--border)]">
+      <div className="mx-4 md:mx-8 relative h-[40vw] my-8">
         <Image
           src="/images/hero.png"
           alt="ChinguVerse application screenshot"
           fill
-          style={{ objectFit: "cover" }}
+          style={{ objectFit: "contain" }}
           priority
           sizes="100vw"
         />
