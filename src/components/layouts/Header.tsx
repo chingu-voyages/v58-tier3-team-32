@@ -80,17 +80,19 @@ export default function Header() {
         </nav>
         <div className="flex items-center justify-end gap-4">
           <Label className="hidden md:flex">{today}</Label>
-          {mounted && (user ? (
-            <button
-              onClick={() => signOut(auth)}
-            >
-              <Logout />
-            </button>
-          ) : (
-            <Link href="/chinguverse/auth/login" className="text-[var(--text-link)] hover:text-[var(--text-link-hover)]">
-              <Login />
-            </Link>
-          ))}
+          {mounted &&
+            (user ? (
+              <button onClick={() => signOut(auth)}>
+                <Logout />
+              </button>
+            ) : (
+              <Link
+                href="/chinguverse/auth/login"
+                className="text-[var(--text-link)] hover:text-[var(--text-link-hover)]"
+              >
+                <Login />
+              </Link>
+            ))}
           <div className="sm:hidden">
             <MobileMenu navItems={navItems} />
           </div>
