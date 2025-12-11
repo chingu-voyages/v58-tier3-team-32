@@ -58,7 +58,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 border-b border-[var(--border)]">
+    <header className="sticky top-0 left-0 w-full z-50 border-b border-[var(--border)]">
       <div className="flex items-center justify-between mx-auto px-4 sm:px-6 lg:px-24 h-16 bg-[var(--primary)] md:grid md:grid-cols-[1fr_auto_1fr]">
         <Link href="/" className="flex h-full items-center">
           <Image
@@ -80,17 +80,19 @@ export default function Header() {
         </nav>
         <div className="flex items-center justify-end gap-4">
           <Label className="hidden md:flex">{today}</Label>
-          {mounted && (user ? (
-            <button
-              onClick={() => signOut(auth)}
-            >
-              <Logout />
-            </button>
-          ) : (
-            <Link href="/chinguverse/auth/login" className="text-[var(--text-link)] hover:text-[var(--text-link-hover)]">
-              <Login />
-            </Link>
-          ))}
+          {mounted &&
+            (user ? (
+              <button onClick={() => signOut(auth)}>
+                <Logout />
+              </button>
+            ) : (
+              <Link
+                href="/chinguverse/auth/login"
+                className="text-[var(--text-link)] hover:text-[var(--text-link-hover)]"
+              >
+                <Login />
+              </Link>
+            ))}
           <div className="sm:hidden">
             <MobileMenu navItems={navItems} />
           </div>
