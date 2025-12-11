@@ -30,11 +30,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-[100vh] flex flex-col`}
       >
         <AuthProvider>
           <Header />
-          <main className="mt-16">{children}
+          <main className="flex-1">
+            {children}
             <ChatWindow />
           </main>
           <Footer />
