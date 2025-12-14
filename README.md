@@ -13,6 +13,15 @@ This app was built as part of the Chingu Voyage Project(V58-TIER3-TEAM-32). It a
 - [LIVE LINK](https://chinguverse.vercel.app/)
 - [Repository](https://github.com/chingu-voyages/v58-tier3-team-32)
 
+## Contents
+
+- [Features](#features)
+- [Tech Used / Dependencies](#tech-used--dependencies)
+- [Running the Project Locally](#running-the-project-locally)
+- [API Reference](#api-reference)
+- [Our Team](#our-team)
+- [License](#license)
+
 ## Features
 
 Users can:
